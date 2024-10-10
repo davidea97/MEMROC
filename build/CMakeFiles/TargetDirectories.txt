@@ -1,0 +1,4 @@
+/home/davide/davide_ws/src/MEMROC/build/CMakeFiles/MEMROC.dir
+/home/davide/davide_ws/src/MEMROC/build/CMakeFiles/MEMROC_utils.dir
+/home/davide/davide_ws/src/MEMROC/build/CMakeFiles/edit_cache.dir
+/home/davide/davide_ws/src/MEMROC/build/CMakeFiles/rebuild_cache.dir
