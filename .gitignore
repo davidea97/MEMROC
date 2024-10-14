@@ -1,1 +1,4 @@
 data
+.vscode
+.gitignore
+.DS_Store
