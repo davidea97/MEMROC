@@ -1,2 +1,0 @@
-/usr/bin/ar qc libMEMROC_utils.a CMakeFiles/MEMROC_utils.dir/src/Calibrator.cpp.o CMakeFiles/MEMROC_utils.dir/src/utils.cpp.o CMakeFiles/MEMROC_utils.dir/src/CameraInfo.cpp.o CMakeFiles/MEMROC_utils.dir/src/Detector.cpp.o CMakeFiles/MEMROC_utils.dir/src/display_utils.cpp.o CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.o CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o CMakeFiles/MEMROC_utils.dir/src/CalibrationInfo.cpp.o
-/usr/bin/ranlib libMEMROC_utils.a
