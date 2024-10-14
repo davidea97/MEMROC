@@ -262,30 +262,6 @@ src/MobileHandEyeCalibrator.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MEMROC_utils.dir/build.make CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.s
 .PHONY : src/MobileHandEyeCalibrator.cpp.s
 
-src/PinholeCameraModel.o: src/PinholeCameraModel.cpp.o
-.PHONY : src/PinholeCameraModel.o
-
-# target to build an object file
-src/PinholeCameraModel.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MEMROC_utils.dir/build.make CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.o
-.PHONY : src/PinholeCameraModel.cpp.o
-
-src/PinholeCameraModel.i: src/PinholeCameraModel.cpp.i
-.PHONY : src/PinholeCameraModel.i
-
-# target to preprocess a source file
-src/PinholeCameraModel.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MEMROC_utils.dir/build.make CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.i
-.PHONY : src/PinholeCameraModel.cpp.i
-
-src/PinholeCameraModel.s: src/PinholeCameraModel.cpp.s
-.PHONY : src/PinholeCameraModel.s
-
-# target to generate assembly for a file
-src/PinholeCameraModel.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MEMROC_utils.dir/build.make CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.s
-.PHONY : src/PinholeCameraModel.cpp.s
-
 src/Reader.o: src/Reader.cpp.o
 .PHONY : src/Reader.o
 
@@ -407,9 +383,6 @@ help:
 	@echo "... src/MobileHandEyeCalibrator.o"
 	@echo "... src/MobileHandEyeCalibrator.i"
 	@echo "... src/MobileHandEyeCalibrator.s"
-	@echo "... src/PinholeCameraModel.o"
-	@echo "... src/PinholeCameraModel.i"
-	@echo "... src/PinholeCameraModel.s"
 	@echo "... src/Reader.o"
 	@echo "... src/Reader.i"
 	@echo "... src/Reader.s"

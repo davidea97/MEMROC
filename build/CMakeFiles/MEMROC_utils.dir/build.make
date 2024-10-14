@@ -139,24 +139,10 @@ CMakeFiles/MEMROC_utils.dir/src/display_utils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/MEMROC_utils.dir/src/display_utils.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/davide/davide_ws/src/MEMROC/src/display_utils.cpp -o CMakeFiles/MEMROC_utils.dir/src/display_utils.cpp.s
 
-CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.o: CMakeFiles/MEMROC_utils.dir/flags.make
-CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.o: /home/davide/davide_ws/src/MEMROC/src/PinholeCameraModel.cpp
-CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.o: CMakeFiles/MEMROC_utils.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/davide/davide_ws/src/MEMROC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.o -MF CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.o.d -o CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.o -c /home/davide/davide_ws/src/MEMROC/src/PinholeCameraModel.cpp
-
-CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/davide/davide_ws/src/MEMROC/src/PinholeCameraModel.cpp > CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.i
-
-CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/davide/davide_ws/src/MEMROC/src/PinholeCameraModel.cpp -o CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.s
-
 CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.o: CMakeFiles/MEMROC_utils.dir/flags.make
 CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.o: /home/davide/davide_ws/src/MEMROC/src/Reader.cpp
 CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.o: CMakeFiles/MEMROC_utils.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/davide/davide_ws/src/MEMROC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/davide/davide_ws/src/MEMROC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.o -MF CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.o.d -o CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.o -c /home/davide/davide_ws/src/MEMROC/src/Reader.cpp
 
 CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.i: cmake_force
@@ -170,7 +156,7 @@ CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.s: cmake_force
 CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o: CMakeFiles/MEMROC_utils.dir/flags.make
 CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o: /home/davide/davide_ws/src/MEMROC/src/MobileHandEyeCalibrator.cpp
 CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o: CMakeFiles/MEMROC_utils.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/davide/davide_ws/src/MEMROC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/davide/davide_ws/src/MEMROC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o -MF CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o.d -o CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o -c /home/davide/davide_ws/src/MEMROC/src/MobileHandEyeCalibrator.cpp
 
 CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.i: cmake_force
@@ -184,7 +170,7 @@ CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.s: cmake_force
 CMakeFiles/MEMROC_utils.dir/src/CalibrationInfo.cpp.o: CMakeFiles/MEMROC_utils.dir/flags.make
 CMakeFiles/MEMROC_utils.dir/src/CalibrationInfo.cpp.o: /home/davide/davide_ws/src/MEMROC/src/CalibrationInfo.cpp
 CMakeFiles/MEMROC_utils.dir/src/CalibrationInfo.cpp.o: CMakeFiles/MEMROC_utils.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/davide/davide_ws/src/MEMROC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/MEMROC_utils.dir/src/CalibrationInfo.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/davide/davide_ws/src/MEMROC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/MEMROC_utils.dir/src/CalibrationInfo.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MEMROC_utils.dir/src/CalibrationInfo.cpp.o -MF CMakeFiles/MEMROC_utils.dir/src/CalibrationInfo.cpp.o.d -o CMakeFiles/MEMROC_utils.dir/src/CalibrationInfo.cpp.o -c /home/davide/davide_ws/src/MEMROC/src/CalibrationInfo.cpp
 
 CMakeFiles/MEMROC_utils.dir/src/CalibrationInfo.cpp.i: cmake_force
@@ -202,7 +188,6 @@ MEMROC_utils_OBJECTS = \
 "CMakeFiles/MEMROC_utils.dir/src/CameraInfo.cpp.o" \
 "CMakeFiles/MEMROC_utils.dir/src/Detector.cpp.o" \
 "CMakeFiles/MEMROC_utils.dir/src/display_utils.cpp.o" \
-"CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.o" \
 "CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.o" \
 "CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o" \
 "CMakeFiles/MEMROC_utils.dir/src/CalibrationInfo.cpp.o"
@@ -215,13 +200,12 @@ libMEMROC_utils.a: CMakeFiles/MEMROC_utils.dir/src/utils.cpp.o
 libMEMROC_utils.a: CMakeFiles/MEMROC_utils.dir/src/CameraInfo.cpp.o
 libMEMROC_utils.a: CMakeFiles/MEMROC_utils.dir/src/Detector.cpp.o
 libMEMROC_utils.a: CMakeFiles/MEMROC_utils.dir/src/display_utils.cpp.o
-libMEMROC_utils.a: CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.o
 libMEMROC_utils.a: CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.o
 libMEMROC_utils.a: CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o
 libMEMROC_utils.a: CMakeFiles/MEMROC_utils.dir/src/CalibrationInfo.cpp.o
 libMEMROC_utils.a: CMakeFiles/MEMROC_utils.dir/build.make
 libMEMROC_utils.a: CMakeFiles/MEMROC_utils.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/davide/davide_ws/src/MEMROC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX static library libMEMROC_utils.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/davide/davide_ws/src/MEMROC/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX static library libMEMROC_utils.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/MEMROC_utils.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/MEMROC_utils.dir/link.txt --verbose=$(VERBOSE)
 

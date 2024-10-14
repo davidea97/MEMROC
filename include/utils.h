@@ -56,8 +56,6 @@ std::string type2str(int type);
 std::vector<std::vector<cv::Mat>> getRelativePoses(const std::vector<std::vector<cv::Mat>>& poses);
 void savePose(int i, cv::Mat pose, std::string folder);
 Eigen::Matrix4d parametersToMatrix(const std::vector<double>& params);
-double handEyeObjective(const std::vector<double> &x, std::vector<double> &grad, void *data);
-double handEyeObjectiveAXXB(const std::vector<double> &x, std::vector<double> &grad, void *data);
 double dotProduct(const cv::Point3d& a, const cv::Point3d& b);
 Eigen::Matrix3d computeRotationMatrix(const Eigen::Matrix3d& A, const Eigen::Matrix3d& B);
 Eigen::Matrix3d computeSvd(const Eigen::Matrix3d& H);
@@ -68,18 +66,14 @@ cv::Mat readPointsFromFile(const std::string& filename);
 void reOrthogonalize(cv::Mat& R);
 void data_augmentation(std::vector<cv::Mat> &robot_poses, std::vector<cv::Mat> pnp, std::vector<cv::Mat> &pnp_tras, std::vector<cv::Mat> &pnp_rot, cv::Mat svd,  const double std_dev, const double std_dev_t, std::vector<std::vector<int>> cross_obs);
 void data_perturbation(std::vector<cv::Mat> &robot_poses, const double std_dev_tras, const double std_dev_rot, std::normal_distribution<> d_tras, std::normal_distribution<> d_rot, std::mt19937 gen);
-void extractAndMatchSIFT(const std::vector<cv::Mat>& collected_images, std::vector<std::vector<cv::KeyPoint>>& keypoints1_vec, std::vector<std::vector<cv::KeyPoint>>& keypoints2_vec);
 
 void triangulatePoints(const cv::Mat& rvec1, const cv::Mat& tvec1, const cv::Mat& rvec2, const cv::Mat& tvec2, const std::vector<cv::KeyPoint>& keypoints1, const std::vector<cv::KeyPoint>& keypoints2, const cv::Mat& cameraMatrix, std::vector<cv::Point3d>& outputPoints);
 void convertKeypointsToPoint2f(const std::vector<cv::KeyPoint>& keypoints, std::vector<cv::Point2f>& points);
-void plotWithPCL(const std::vector<cv::Point3d>& inputPoints, const cv::Mat svd);
 cv::Mat readPointsFromTriangulation(const std::vector<cv::Point3d> triangulated_points);
 double calculateInclination(const cv::Point3d vector);
 void transVec2mat(std::vector<cv::Mat> trans_vec, std::vector<std::vector<int>> cross_observation_matrix, cv::Mat& trans_matrix, const int inversion, const int num_camera);
 cv::Mat getSVD(cv::Mat data1, cv::Mat data2);
 void findDeepMatches(const std::string& matchesFolderPath, std::vector<cv::Mat>& images_collected, std::vector<std::vector<cv::KeyPoint>>& keypoints1_vec, std::vector<std::vector<cv::KeyPoint>>& keypoints2_vec, int start_index, int end_index, double resize);
-void metric_AX_XB(const std::vector<cv::Mat>& X, const std::vector<std::vector<cv::Mat>>& Ai, const std::vector<std::vector<cv::Mat>>& Bi, const std::vector<std::vector<int>>& cross_observation_matrix);
-std::string getStringAfterLastSlash(const std::string& input);
 int countImagesInFolder(const std::string& path);
 cv::Mat rpyToRotationMatrix(const cv::Mat& rpy);
 cv::Mat rotationMatrixToRpy(const cv::Mat& R);
@@ -103,7 +97,6 @@ void plot3DTrajectories(const std::vector<cv::Mat>& robot2d, const std::vector<c
 bool hasNonZero(const std::vector<std::vector<double>>& vectors, const std::vector<std::vector<int>>& cross_observation_matrix);
 double computeTransError_AXXB(cv::Mat A, cv::Mat B, cv::Mat X);
 std::vector<double> computeTransAverageError_AXXB(std::vector<std::vector<cv::Mat>> A, std::vector<std::vector<cv::Mat>> B, std::vector<cv::Mat> X);
-void selectRandomSubsetAXXB_RANSAC(std::vector<std::vector<cv::Mat>>& selected_A, std::vector<std::vector<cv::Mat>>& selected_B, std::vector<std::vector<int>>& cross_observation_matrix_RANSAC, const int min_inliers, const int number_of_cameras, std::default_random_engine generator, std::uniform_int_distribution<size_t> distribution, const std::vector<std::vector<cv::Mat>> relative_robot_poses, const std::vector<std::vector<cv::Mat>> relative_cam_poses);
 cv::Vec4d rotationMatrixToQuaternion(const cv::Mat &R);
 
 void saveTranslationVectors(const std::vector<cv::Mat>& h2e_matrices, const std::vector<cv::Mat>& c2c_matrices, const std::string& filename);

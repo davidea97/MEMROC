@@ -165,7 +165,6 @@ void Calibrator::svdElaboration(const std::vector<std::vector<cv::Mat>>& poses_c
 }
 
 void Calibrator::processPointClouds(const std::vector<std::vector<cv::Mat>>& poses_collected, std::vector<std::vector<int>> cross_observation_matrix, std::vector<cv::Mat> svd_mat_vec, std::vector<cv::Mat> svd_mat_inv_vec, std::vector<std::vector<cv::Mat>> rototras_vec, std::vector<std::vector<double>>& d_camera_whole, std::vector<std::vector<double>>& ang_camera_whole) {
-    //double ground_plane_confidence = 0.9999;
     const int number_of_cameras = poses_collected.size();
     const int number_of_waypoints = poses_collected[0].size();
 
@@ -174,16 +173,15 @@ void Calibrator::processPointClouds(const std::vector<std::vector<cv::Mat>>& pos
         std::vector<cv::Mat> pointcloud_vec(number_of_waypoints);
 
         // Prepare data structures
-        //std::vector<double> d_board_vec(number_of_waypoints), ang_board_vec(number_of_waypoints);
         std::vector<double> d_camera_vec(number_of_waypoints), ang_camera_vec(number_of_waypoints);
 
         std::cout << "#################################### CAMERA " << std::to_string(cam + 1) << " ####################################" << std::endl;
 
         // Point cloud processing
-        groundPlaneDetection(cam, pointcloud_vec, number_of_cameras, number_of_waypoints);
+        preparePlaneDetection(cam, pointcloud_vec, number_of_cameras, number_of_waypoints);
 
         // Process pointcloud data and extract features
-        processPointCloudData(cam, pointcloud_vec, d_camera_vec, ang_camera_vec, cross_observation_matrix, svd_mat_vec, svd_mat_inv_vec, rototras_vec);
+        groundPlaneDetection(cam, pointcloud_vec, d_camera_vec, ang_camera_vec, cross_observation_matrix, svd_mat_vec, svd_mat_inv_vec, rototras_vec);
         
         double threshold = 0.995;
         for (int i = 0; i < number_of_waypoints; i++) {
@@ -196,7 +194,7 @@ void Calibrator::processPointClouds(const std::vector<std::vector<cv::Mat>>& pos
     }
 }
 
-void Calibrator::groundPlaneDetection(int cam, std::vector<cv::Mat>& pointcloud_vec, int number_of_cameras, int end_index) {
+void Calibrator::preparePlaneDetection(int cam, std::vector<cv::Mat>& pointcloud_vec, int number_of_cameras, int end_index) {
     namespace fs = std::filesystem;
     std::vector<std::vector<fs::directory_entry>> entries(number_of_cameras);
 
@@ -221,28 +219,12 @@ void Calibrator::groundPlaneDetection(int cam, std::vector<cv::Mat>& pointcloud_
     }
 }
 
-void Calibrator::processPointCloudData(int cam, std::vector<cv::Mat>& pointcloud_vec, std::vector<double>& d_camera_vec, std::vector<double>& ang_camera_vec, std::vector<std::vector<int>> cross_observation_matrix, std::vector<cv::Mat>& svd_mat_vec, std::vector <cv::Mat>& svd_mat_inv_vec, std::vector<std::vector<cv::Mat>> rototras_vec) {
+void Calibrator::groundPlaneDetection(int cam, std::vector<cv::Mat>& pointcloud_vec, std::vector<double>& d_camera_vec, std::vector<double>& ang_camera_vec, std::vector<std::vector<int>> cross_observation_matrix, std::vector<cv::Mat>& svd_mat_vec, std::vector <cv::Mat>& svd_mat_inv_vec, std::vector<std::vector<cv::Mat>> rototras_vec) {
     
     // Process the pointcloud data and compute RANSAC models
     double ground_plane_confidence = 0.9999;
     for (int i = 0; i < pointcloud_vec.size(); i++) {
         if (cross_observation_matrix[i][cam] && !pointcloud_vec[i].empty()) {
-            // cv::Mat pointcloud_board = rototras_vec[cam][i].inv() * pointcloud_vec[i];
-            // cv::Mat null_tras = cv::Mat::zeros(3, 1, CV_64F);
-            // cv::Mat svd;
-            // getRotoTras<double>(svd_mat_vec[cam], null_tras, svd);
-            // cv::Mat pointcloud_world = svd * pointcloud_board;
-
-            // pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-            // for (int k = 0; k < pointcloud_board.cols; k++) {
-            //     cloud->points.push_back(pcl::PointXYZ(
-            //         pointcloud_world.at<double>(0, k),
-            //         pointcloud_world.at<double>(1, k),
-            //         pointcloud_world.at<double>(2, k)));
-            // }
-            // cloud->width = cloud->points.size();
-            // cloud->height = 1;
-            // cloud->is_dense = false;
             cv::Mat null_tras = (cv::Mat_<double>(3, 1) << 0, 0, 0);
             cv::Mat svd;
             getRotoTras<double>(svd_mat_inv_vec[cam], null_tras, svd);
@@ -276,12 +258,13 @@ void Calibrator::processPointCloudData(int cam, std::vector<cv::Mat>& pointcloud
             }
 
             // Process pointcloud features
-            processPointCloudFeatures(coefficients, d_camera_vec[i], ang_camera_vec[i]);
+            computeCameraHeight(coefficients, d_camera_vec[i], ang_camera_vec[i]);
         }
     }
 }
 
-void Calibrator::processPointCloudFeatures(const pcl::ModelCoefficients::Ptr& coefficients, double& d_camera, double& ang_camera) {
+void Calibrator::computeCameraHeight(const pcl::ModelCoefficients::Ptr& coefficients, double& d_camera, double& ang_camera) {
+    
     // Process and extract pointcloud features
     cv::Mat normal_wrt_world = (cv::Mat_<double>(3, 1) << coefficients->values[0], coefficients->values[1], coefficients->values[2]);
     cv::Point3d normal_vec_wrt_world(
@@ -294,9 +277,6 @@ void Calibrator::processPointCloudFeatures(const pcl::ModelCoefficients::Ptr& co
 
     d_camera = coefficients->values[3];
     ang_camera = scalar;
-
-    //d_board = coefficients->values[3];
-    //ang_board = scalar;
 }
 
 void Calibrator::calibrationProcess(Detector detector, std::vector<std::vector<cv::Mat>> correct_poses, std::vector<std::vector<cv::Mat>> rototras_all, std::vector<std::vector<int>> cross_observation_matrix, std::vector<std::vector<cv::Mat>>& relative_robot_poses, std::vector<std::vector<cv::Mat>>& relative_cam_poses, std::vector<std::vector<double>> d_camera_whole) {
@@ -316,12 +296,9 @@ void Calibrator::calibrationProcess(Detector detector, std::vector<std::vector<c
     }
 
     // Start the calibration process
-    std::cout << "DEBUG 0" << std::endl;
     MobileHandEyeCalibrator mobile_calibrator(detector.getNumberOfWaypoints(), number_of_cameras, h2e_initial_guess_vec, cross_observation_matrix, d_camera_whole, relative_robot_poses, relative_cam_poses);
-    std::cout << "DEBUG 1" << std::endl;
     mobile_calibrator.mobileCalibration(multi_h2e_optimal_vec);
 
-    std::cout << "DEBUG 2" << std::endl;
     std::vector<cv::Mat> best_h2e_wor(number_of_cameras);
     for (int i = 0; i < number_of_cameras; i++) {
         best_h2e_wor[i] = multi_h2e_optimal_vec[i];

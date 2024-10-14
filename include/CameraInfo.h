@@ -2,8 +2,8 @@
 // Created by davide on 12/09/23.
 //
 
-#ifndef METRIC_CALIBRATOR_CAMERAINFO_H
-#define METRIC_CALIBRATOR_CAMERAINFO_H
+#ifndef MEMROC_CALIBRATOR_CAMERAINFO_H
+#define MEMROC_CALIBRATOR_CAMERAINFO_H
 
 #include <string>
 #include <iostream>

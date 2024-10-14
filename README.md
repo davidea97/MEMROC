@@ -33,67 +33,80 @@ It is essential that the structure of your data is as follows:
 * [data](./data)
    * [<name_of_your_data_folder>](./data/exp1)
         * [camera1](./data/exp1/camera1)
-          *
-          *
-          *
+          * [clouds](./data/exp1/camera1/clouds)
+          * [image](./data/exp1/camera1/image)
+          * [pose](./data/exp1/camera1/image)
+          * intrinsic_pars_file.yaml
         * [camera2](./data/exp1/camera1)
         * [cameraN](./data/exp1/camera1)
-        * [CalibrationInfo.yaml]
+        * CalibrationInfo.yaml
 * [include](./include)
 * [build](build)
 * [CMakeLists.txt](./CMakeLists.txt)
 
-
-In particular the camera folders has to include:
-
+#### More in detail: 
 The CalibrationInfo.yaml must have the following structure:
 ```
-# Number of cameras you want to calibrate
-number_of_cameras: 3
-# Camera folder name where pose and image subfolders are located
-camera_folder_prefix: camera
-# Pattern type used
-pattern_type: checkerboard
+number_of_cameras: 3          # Number of cameras you want to calibrate
+camera_folder_prefix: camera  # Camera folder name where pose and image subfolders are located
+pattern_type: checkerboard    # Pattern type used
 
-# Number of rows
-number_of_rows: 3
-# Number of columns
-number_of_columns: 4
-# Pattern size
-size: 0.10
+number_of_rows: 3             # Number of rows
+number_of_columns: 4          # Number of columns
+size: 0.10                    # Pattern size
 
-# Resize factor
-resize_factor: 1
-# Store reprojected corners: 0 to remove visualization, 1 if you want to store them
-visual_error: 1
-# Evaluation with ground truth: 0 if the GT is not available, 1 if the ground truth is provided in GT folder
-gt: 0
-# Calibration type: 0 eye-in-hand, 1 eye-on-base
-calibration_setup: 2
-# Calibration info: 0 not needed, 1 perform it
-intrinsic_calibration: 0
-# Metric AX=ZB
-metric: 1
+resize_factor: 1              # Resize factor
 ``` 
+* **Cameras folder**: The number of folders in this directory must match the number of cameras you wish to calibrate. This should correspond to the information set in the `CalibrationInfo.yaml` file.
+
+* **Clouds folder**: This folder should contain `.txt` files (e.g., `0000.txt`, `0001.txt`, ...) with 3D point data. Each file represents a point cloud in the camera's reference frame, with each row corresponding to a single 3D point (x y z). These point clouds are collected at different robot poses, but the number of files does not need to match the number of robot poses—one file is sufficient. If only RGB images are available, you can extract the point cloud by using two images from the same camera taken at different poses. Apply feature extraction and matching methods to these images and triangulate the 3D points using the camera's relative poses, which can be computed by detecting the calibration pattern.
+
+* **Image folder**: This directory contains the images captured by the sensors, named sequentially (e.g., `0000.png`, `0001.png`, ...).
+
+* **Pose folder**: This folder should include `.csv` files (e.g., `0000.csv`, `0001.csv`, ...) that represent the 4x4 rototranslation matrices of the mobile robot with respect to its initial pose, as provided by odometry measurements. Each row in the CSV file represents the first row of a 4x4 transformation matrix.
+
+* **intrinsic_pars_file.yaml**: This file contains the intrinsic parameters for each camera. It must follow the structure outlined below:
+
+
+```
+fx: 1108.509382382374
+fy: 1108.509382382374
+cx: 640.5
+cy: 360.5
+has_dist_coeff: 1
+dist_k0: 0.0
+dist_k1: 0.0
+dist_px: 0.0
+dist_py: 0.0
+dist_k2: 0.0
+dist_k3: 0
+dist_k4: 0
+dist_k5: 0
+img_width: 1280
+img_height: 720
+``` 
+
+
 
 ## Calibration process usage
 ![MEMROC Overview](images/method.png)
 
-To execute the following code, the ceres-solver library (link), opencv>4.2, eigen>3.3.7 and PCL libraries must be correctly installed. 
+To run the code, make sure the following libraries are properly installed:
 
-```
+- [Ceres Solver](http://ceres-solver.org/)
+- OpenCV (version > 4.2)
+- Eigen (version > 3.3.7)
+- PCL (Point Cloud Library)
+
+Once the dependencies are installed, follow these steps to execute the program:
+
+```bash
 cd build
 ./MEMROC ../data/<name_of_your_data_folder>/
 ```
 
-It will provide the resulting rototranslation describing the relative position of each camera mounted on the mobile robot with respect to the mobile robot reference frame.
-
 ## Citation
 
 ## License
-The MEMROC dataset is released under the CC BY-NC-SA 4.0 license. 
-
-Authors reserve the right to change the license in the future.
-
-Authors of the MEMROC dataset are not responsible for any misuse of the dataset or any potential harm caused by the use of the dataset.
+The MEMROC dataset is released under the CC BY-NC-SA 4.0 license. Authors reserve the right to change the license in the future. Authors of the MEMROC dataset are not responsible for any misuse of the dataset or any potential harm caused by the use of the dataset.
 

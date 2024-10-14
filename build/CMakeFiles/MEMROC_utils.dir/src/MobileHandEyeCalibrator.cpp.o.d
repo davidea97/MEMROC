@@ -2090,5 +2090,4 @@ CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o: \
  /home/davide/davide_ws/src/MEMROC/include/CalibrationInfo.h \
  /home/davide/davide_ws/src/MEMROC/include/display_utils.h \
  /home/davide/davide_ws/src/MEMROC/include/handeye_calibrator.h \
- /usr/local/include/ceres/rotation.h \
- /home/davide/davide_ws/src/MEMROC/include/PinholeCameraModel.h
+ /usr/local/include/ceres/rotation.h

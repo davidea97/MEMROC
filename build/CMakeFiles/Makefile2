@@ -88,7 +88,7 @@ CMakeFiles/MEMROC.dir/all: CMakeFiles/MEMROC_utils.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/MEMROC.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/davide/davide_ws/src/MEMROC/build/CMakeFiles 12
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/davide/davide_ws/src/MEMROC/build/CMakeFiles 11
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/MEMROC.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/davide/davide_ws/src/MEMROC/build/CMakeFiles 0
 .PHONY : CMakeFiles/MEMROC.dir/rule
@@ -109,12 +109,12 @@ CMakeFiles/MEMROC.dir/clean:
 CMakeFiles/MEMROC_utils.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MEMROC_utils.dir/build.make CMakeFiles/MEMROC_utils.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MEMROC_utils.dir/build.make CMakeFiles/MEMROC_utils.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/davide/davide_ws/src/MEMROC/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12 "Built target MEMROC_utils"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/davide/davide_ws/src/MEMROC/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11 "Built target MEMROC_utils"
 .PHONY : CMakeFiles/MEMROC_utils.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/MEMROC_utils.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/davide/davide_ws/src/MEMROC/build/CMakeFiles 10
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/davide/davide_ws/src/MEMROC/build/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/MEMROC_utils.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/davide/davide_ws/src/MEMROC/build/CMakeFiles 0
 .PHONY : CMakeFiles/MEMROC_utils.dir/rule

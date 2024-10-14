@@ -14,11 +14,8 @@
 
 #include "Reader.h"
 #include "Detector.h"
-#include "SingleHandEyeCalibrator.h"
-#include "MultiHandEyeCalibrator.h"
 #include "MobileHandEyeCalibrator.h"
 #include "utils.h"
-#include "Metrics.h"
 
 #include <Eigen/Dense>
 #include <pcl/point_types.h>
@@ -35,9 +32,9 @@ private:
     void computePoses(std::vector<std::vector<cv::Mat>>& relative_robot_poses, std::vector<std::vector<cv::Mat>>& relative_cam_poses, std::vector<std::vector<cv::Mat>>& rvec_all, std::vector<std::vector<cv::Mat>>& tvec_all, std::vector<std::vector<cv::Mat>> poses_collected, std::vector<std::vector<cv::Mat>> rototras_vec, std::vector<std::vector<cv::Mat>> rototras_all, std::vector<std::vector<int>> cross_observation_matrix);
     void svdElaboration(const std::vector<std::vector<cv::Mat>>& poses_collected, const std::vector<std::vector<cv::Mat>>& rvec_all, const std::vector<std::vector<cv::Mat>>& relative_robot_poses, const std::vector<std::vector<cv::Mat>>& relative_cam_poses, std::vector<std::vector<cv::Mat>> rototras_vec, std::vector<std::vector<cv::Mat>> rototras_all, std::vector<std::vector<int>> cross_observation_matrix, std::vector<cv::Mat>& svd_mat_vec, std::vector<cv::Mat>& svd_mat_inv_vec);
     void processPointClouds(const std::vector<std::vector<cv::Mat>>& poses_collected, std::vector<std::vector<int>> cross_observation_matrix, std::vector<cv::Mat> svd_mat_vec, std::vector <cv::Mat> svd_mat_inv_vec, std::vector<std::vector<cv::Mat>> rototras_vec, std::vector<std::vector<double>>& d_camera_whole, std::vector<std::vector<double>>& ang_camera_whole);
-    void groundPlaneDetection(int cam, std::vector<cv::Mat>& pointcloud_vec, int number_of_cameras, int end_index);
-    void processPointCloudData(int cam, std::vector<cv::Mat>& pointcloud_vec, std::vector<double>& d_camera_vec, std::vector<double>& ang_camera_vec, std::vector<std::vector<int>> cross_observation_matrix, std::vector<cv::Mat>& svd_mat_vec, std::vector <cv::Mat>& svd_mat_inv_vec, std::vector<std::vector<cv::Mat>> rototras_vec);
-    void processPointCloudFeatures(const pcl::ModelCoefficients::Ptr& coefficients, double& d_board, double& ang_board);
+    void preparePlaneDetection(int cam, std::vector<cv::Mat>& pointcloud_vec, int number_of_cameras, int end_index);
+    void groundPlaneDetection(int cam, std::vector<cv::Mat>& pointcloud_vec, std::vector<double>& d_camera_vec, std::vector<double>& ang_camera_vec, std::vector<std::vector<int>> cross_observation_matrix, std::vector<cv::Mat>& svd_mat_vec, std::vector <cv::Mat>& svd_mat_inv_vec, std::vector<std::vector<cv::Mat>> rototras_vec);
+    void computeCameraHeight(const pcl::ModelCoefficients::Ptr& coefficients, double& d_board, double& ang_board);
     void calibrationProcess(Detector detector,std::vector<std::vector<cv::Mat>> correct_poses, std::vector<std::vector<cv::Mat>> rototras_all, std::vector<std::vector<int>> cross_observation_matrix, std::vector<std::vector<cv::Mat>>& relative_robot_poses, std::vector<std::vector<cv::Mat>>& relative_cam_poses, std::vector<std::vector<double>> d_camera_whole);
 
 public:

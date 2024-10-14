@@ -9,8 +9,6 @@
 #include "ceres/ceres.h"
 #include <ceres/rotation.h>
 
-#include "PinholeCameraModel.h"
-
 
 struct Classic_ax_xb_rel
 {

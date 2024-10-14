@@ -2,8 +2,8 @@
 // Created by davide on 12/09/23.
 //
 
-#ifndef METRIC_CALIBRATOR_READER_H
-#define METRIC_CALIBRATOR_READER_H
+#ifndef MEMROC_CALIBRATOR_READER_H
+#define MEMROC_CALIBRATOR_READER_H
 
 #include <string>
 #include <filesystem>
@@ -33,4 +33,4 @@ public:
     int countImagesInFolder(const std::string& folder_path);
 };
 
-#endif //METRIC_CALIBRATOR_READER_H
+#endif //MEMROC_CALIBRATOR_READER_H

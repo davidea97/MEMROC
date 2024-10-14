@@ -26,15 +26,10 @@ bool Reader::readCalibrationInfo(CalibrationInfo& calib_info) {
 
         calib_info.setNumberOfCams(config["number_of_cameras"].as<int>());
         calib_info.setCamFolderPref(config["camera_folder_prefix"].as<std::string>());
-        calib_info.setPatternType(config["pattern_type"].as<std::string>());
         calib_info.setNumRow(config["number_of_rows"].as<int>());
         calib_info.setNumCol(config["number_of_columns"].as<int>());
         calib_info.setSize(config["size"].as<double>());
         calib_info.setResizeFactor(config["resize_factor"].as<double>());
-        calib_info.setVisualError(config["visual_error"].as<int>());
-        calib_info.setGt(config["gt"].as<int>());
-        calib_info.setMetric(config["metric"].as<int>());
-        calib_info.setCalibSetup(config["calibration_setup"].as<int>());
 
         calib_info.printCalibInfo();
 
@@ -73,23 +68,9 @@ std::vector<std::vector<cv::Mat>> Reader::readImages(const int camera_num, const
 
         // Save images
         int counter_progress_bar = 0;
-        /*for (const auto& entry : entries[i]) {
-            cv::Mat image = cv::imread(entry.path().string());
-            showProgressBar(counter_progress_bar, entries[i].size());
-            if (!image.empty()) {
-                if (resize_factor!=1)
-                    cv::resize(image, image, cv::Size(image.cols*resize_factor, image.rows*resize_factor), cv::INTER_CUBIC);
-                images[i].push_back(image);
-            } else {
-                std::cerr << "Error reading image: " << entry.path() << std::endl;
-            }
-
-            counter_progress_bar ++;
-        }*/
         for (int j = start_index; j < end_index; ++j) {
             const auto& entry = entries[i][j];
             cv::Mat image = cv::imread(entry.path().string());
-            // showProgressBar logic might need to be adjusted based on the new iteration range
             showProgressBar(counter_progress_bar - start_index, end_index - start_index); // Adjust progress bar display
             if (!image.empty()) {
                 if (resize_factor != 1)
@@ -128,31 +109,6 @@ std::vector<std::vector<cv::Mat>> Reader::readRobotPoses(const int camera_num, s
         std::sort(entries[i].begin(), entries[i].end(), compareFilenames);
         int counter_progress_bar = 0;
 
-        /*for (const auto& entry : entries[i]) {
-            cv::Mat pose, pose_check_delim;
-            std::string path_pose = entry.path();
-            readPoseFromCSV(path_pose, pose_check_delim, ',');
-            if (pose_check_delim.cols == pose_check_delim.rows){
-                readPoseFromCSV(path_pose, pose, ',');
-            }
-            else{
-                readPoseFromCSV(path_pose, pose, ' ');
-            }
-
-
-            showProgressBar(counter_progress_bar, entries[i].size());
-            if (!pose.empty()) {
-
-                cv::Mat noisy_pose = addGaussianNoise<float>(pose, 0, 0, 0, 0, 0, 0);
-                poses[i].push_back(noisy_pose);
-                original_poses[i].push_back(pose);
-            } else {
-                std::cerr << "Error reading pose: " << entry.path() << std::endl;
-                return poses;
-            }
-
-            counter_progress_bar ++;
-        }*/
         for (int j = start_index; j < end_index; ++j) {
             const auto& entry = entries[i][j];
             cv::Mat pose, pose_check_delim;
@@ -165,10 +121,8 @@ std::vector<std::vector<cv::Mat>> Reader::readRobotPoses(const int camera_num, s
                 readPoseFromCSV(path_pose, pose, ' ');
             }
 
-            // showProgressBar logic might need to be adjusted based on the new iteration range
             showProgressBar(counter_progress_bar - start_index, end_index-start_index); // Adjust progress bar display
             if (!pose.empty()) {
-                //cv::Mat noisy_pose = addGaussianNoise<float>(pose, 0, 0, 0, 0, 0, 0);
                 poses[i].push_back(pose);
                 original_poses[i].push_back(pose);
             } else {

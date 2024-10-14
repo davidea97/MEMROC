@@ -10,35 +10,23 @@ Detector::Detector(const CalibrationInfo calib_info, const std::vector<CameraInf
     calib_info_ = calib_info;
     camera_network_info_ = camera_network_info;
     number_of_waypoints_ = number_of_waypoints;
-    pattern_size_ = cv::Size(calib_info_.getNumRow(), calib_info_.getNumCol());
-
-    if (calib_info_.getPatternType() == "checkerboard") {
-        std::cout << "The calibration pattern is the " << calib_info_.getPatternType() << ". " << std::endl;
-    }
-    else{
-        throw std::invalid_argument("The calibration pattern \"" + calib_info_.getPatternType() + "\" is not accepted!");
-    }
+    pattern_size_ = cv::Size(calib_info_.getNumRow(), calib_info_.getNumCol());    
 }
 
 void Detector::getObjectPoints(std::vector<cv::Point3f> &objectPoints){
 
-    if (calib_info_.getPatternType() == "checkerboard") {
-        for (int i = 0; i < calib_info_.getNumCol(); ++i) {
-            for (int j = 0; j < calib_info_.getNumRow(); ++j) {
-                objectPoints.push_back(cv::Point3f(float(j * calib_info_.getSize()), float(i * calib_info_.getSize()), 0));
-            }
+    for (int i = 0; i < calib_info_.getNumCol(); ++i) {
+        for (int j = 0; j < calib_info_.getNumRow(); ++j) {
+            objectPoints.push_back(cv::Point3f(float(j * calib_info_.getSize()), float(i * calib_info_.getSize()), 0));
         }
     }
 }
 
-
 void Detector::patternDetection(std::vector<std::vector<cv::Mat>> images, std::vector<std::vector<cv::Mat>> poses, std::vector<std::vector<cv::Mat>> &correct_images, std::vector<std::vector<cv::Mat>> &correct_poses, std::vector<std::vector<std::vector<cv::Point2f>>> &correct_corners, std::vector<std::vector<int>> &cross_observation_matrix, std::vector<std::vector<cv::Mat>> &rvec_all, std::vector<std::vector<cv::Mat>> &tvec_all){
 
-    if (calib_info_.getPatternType() == "checkerboard"){
-        checkerboardDetection(images, poses, correct_images, correct_poses, correct_corners, cross_observation_matrix, rvec_all, tvec_all);
-    }
+    checkerboardDetection(images, poses, correct_images, correct_poses, correct_corners, cross_observation_matrix, rvec_all, tvec_all);
+    
 }
-
 
 void Detector::checkerboardDetection(std::vector<std::vector<cv::Mat>> images, std::vector<std::vector<cv::Mat>> poses, std::vector<std::vector<cv::Mat>> &correct_images, std::vector<std::vector<cv::Mat>> &correct_poses, std::vector<std::vector<std::vector<cv::Point2f>>> &correct_corners, std::vector<std::vector<int>> &cross_observation_matrix, std::vector<std::vector<cv::Mat>> &rvec_all, std::vector<std::vector<cv::Mat>> &tvec_all){
 

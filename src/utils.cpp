@@ -69,10 +69,8 @@ void readPoseFromCSV(const std::string& input_path, cv::Mat& out_mat, char delim
 
 bool filterRansac(std::vector<cv::Point3f> object_points, std::vector<cv::Point2f> corners, CameraInfo camera_info, cv::Mat& rvec, cv::Mat& tvec){
 
-    //cv::Mat rvec, tvec;
     std::vector<int> inliers;
     cv::solvePnPRansac(object_points, corners, camera_info.getCameraMatrix(),camera_info.getDistCoeff(), rvec, tvec, false, 100, 15, 0.99, inliers);
-    //cv::solvePnP(object_points, corners, camera_info.getCameraMatrix(), camera_info.getDistCoeff(), rvec, tvec);
     if (inliers.size() == object_points.size())
         return true;
     else
@@ -135,15 +133,12 @@ void translationError(const cv::Mat& matrix1, const cv::Mat &matrix2, double& tr
     cv::Mat translation_vec1 = matrix1(cv::Rect(3, 0, 1, 3));
     cv::Mat translation_vec2 = matrix2(cv::Rect(3, 0, 1, 3));
 
-    //std::cout << "Translation vector 1: " << translation_vec1 << std::endl;
-    //std::cout << "Translation vector 2: " << translation_vec2 << std::endl;
     // Calculate the translation error (Euclidean distance) using OpenCV
     cv::Mat translation_diff;
     translation_vec1.convertTo(translation_vec1, CV_64F);
     translation_vec2.convertTo(translation_vec2, CV_64F);
 
     cv::absdiff(translation_vec1, translation_vec2, translation_diff);
-    //std::cout << "Translation difference: " << translation_diff << std::endl;
     translation_error = cv::norm(translation_diff, cv::NORM_L2);
 }
 
@@ -151,60 +146,52 @@ void rotationError(const cv::Mat& matrix1, const cv::Mat& matrix2, double& rotat
     // Extract the 3x3 rotation components from the 4x4 transformation matrices
     cv::Mat rotation_mat1 = matrix1(cv::Rect(0, 0, 3, 3));
     cv::Mat rotation_mat2 = matrix2(cv::Rect(0, 0, 3, 3));
-    //std::cout << "Rotation matrix 1: " << rotation_mat1 << std::endl;
-    //std::cout << "Rotation matrix 2: " << rotation_mat2 << std::endl;
+
     rotation_mat1.convertTo(rotation_mat1, CV_64F);
     rotation_mat2.convertTo(rotation_mat2, CV_64F);
     // Compute the relative rotation matrix
     cv::Mat rel_mat = rotation_mat1 * rotation_mat2.t(); // Use transpose instead of inverse for rotation matrices
-    //std::cout << "Relative rotation matrix: " << rel_mat << std::endl;
+
     // Convert the OpenCV matrix to an Eigen matrix
     Eigen::Matrix3d eigen_rel_mat = cvMatToEigen(rel_mat);
     //std::cout << "Eigen relative rotation matrix: " << eigen_rel_mat << std::endl;
 
     // Use Eigen to compute the angle of the axis-angle representation
     Eigen::AngleAxisd angleAxis(eigen_rel_mat);
-    //std::cout << "Angle-Axis representation: " << angleAxis.axis() << " " << angleAxis.angle() << std::endl;
     double angle = angleAxis.angle(); // This is the rotation error in radians
 
     // Optionally, convert the angle to degrees
     rotation_error = angle * (180.0 / M_PI);
-
-    //std::cout << "Rotation Error: " << rotation_error << " degrees" << std::endl;
 }
 
 cv::Vec3f rotationMatrixToRPY(const cv::Mat& R) {
     cv::Vec3f euler_angles;
     cv::Mat mtxR, mtxQ;
     cv::Vec3d out_angles;
-    cv::Rodrigues(R, mtxR);  // Converti la matrice di rotazione in un vettore di Rodrigues
-    cv::RQDecomp3x3(mtxR, mtxR, mtxQ, out_angles);  // Decomposizione RQ per ottenere gli angoli di Eulero
+    cv::Rodrigues(R, mtxR);  
+    cv::RQDecomp3x3(mtxR, mtxR, mtxQ, out_angles); 
     euler_angles = out_angles;
     return euler_angles;
 }
-// Funzione per calcolare l'errore medio di rotazione in angoli RPY tra due matrici 4x4
 double averageRPYRotationError(const cv::Mat& mat1, const cv::Mat& mat2) {
-    CV_Assert(mat1.size() == cv::Size(4, 4) && mat2.size() == cv::Size(4, 4));  // Assicurati che le matrici siano 4x4
+    CV_Assert(mat1.size() == cv::Size(4, 4) && mat2.size() == cv::Size(4, 4));  
 
-    // Estrai le sotto-matrici di rotazione 3x3
     cv::Mat R1 = mat1(cv::Rect(0, 0, 3, 3));
     cv::Mat R2 = mat2(cv::Rect(0, 0, 3, 3));
 
-    // Converti in angoli RPY
     cv::Vec3f rpy1 = rotationMatrixToRPY(R1);
     cv::Vec3f rpy2 = rotationMatrixToRPY(R2);
 
-    // Calcola la differenza e l'errore medio
     cv::Vec3f diff = rpy1 - rpy2;
-    double error = cv::norm(diff) / 3.0;  // Errore medio (assumendo pari importanza per roll, pitch, yaw)
+    double error = cv::norm(diff) / 3.0;
 
     return error;
 }
 
-// Funzione ausiliaria per convertire i parametri in una matrice di trasformazione
+
 Eigen::Matrix4d parametersToMatrix(const std::vector<double>& params) {
     Eigen::Matrix3d m;
-    // Assumendo che params contenga angoli di Eulero (rx, ry, rz) seguiti da traslazione (tx, ty, tz)
+
     m = Eigen::AngleAxisd(params[0], Eigen::Vector3d::UnitX())
         * Eigen::AngleAxisd(params[1], Eigen::Vector3d::UnitY())
         * Eigen::AngleAxisd(params[2], Eigen::Vector3d::UnitZ());
@@ -374,115 +361,13 @@ void savePose(int i, cv::Mat pose, std::string folder){
 
 
 
-typedef Eigen::Matrix<double, 4, 4, Eigen::RowMajor> Matrix4d;
-
-
-
-
-double handEyeObjective(const std::vector<double> &x, std::vector<double> &grad, void *data) {
-
-    Matrix4d X = cvMatToEigen(eulerAnglesToRotationMatrix(std::vector<double>(x.begin(), x.begin() + 6)));
-    Matrix4d Z = cvMatToEigen(eulerAnglesToRotationMatrix(std::vector<double>(x.begin() + 6, x.end())));
-
-    double error = 0.0;
-    auto transformPairs = reinterpret_cast<const std::vector<std::pair<cv::Mat, cv::Mat>>*>(data);
-    for (const auto& pair : *transformPairs) {
-        Matrix4d A = cvMatToEigen(pair.first);
-        Matrix4d B = cvMatToEigen(pair.second);
-
-
-        Matrix4d AX = A * X; // T^{W}_{E} * T^{E}_{C}
-        Matrix4d ZB = Z * B; // T^{W}_{B} * T^{B}_{C}
-        Matrix4d diff = AX - ZB;
-
-        error += diff.squaredNorm(); // Somma dei quadrati degli errori
-    }
-
-    // Calcolo del gradiente omesso per brevità
-    if (!grad.empty()) {
-        std::fill(grad.begin(), grad.end(), 0.0); // Implementazione specifica richiesta
-    }
-
-    std::cout << "Valore attuale della funzione obiettivo: " << error << std::endl;
-    std::cout << "Parametri attuali: ";
-    for (const auto& param : x) {
-        std::cout << param << " ";
-    }
-    std::cout << std::endl;
-
-
-    return error;
-};
-
-double handEyeObjectiveAXXB(const std::vector<double> &x, std::vector<double> &grad, void *data) {
-
-    Matrix4d X = cvMatToEigen(eulerAnglesToRotationMatrix(std::vector<double>(x.begin(), x.begin() + 6)));
-
-    double error = 0.0;
-    auto transformPairs = reinterpret_cast<const std::vector<std::pair<cv::Mat, cv::Mat>>*>(data);
-    for (const auto& pair : *transformPairs) {
-        Matrix4d A = cvMatToEigen(pair.first);
-        Matrix4d B = cvMatToEigen(pair.second);
-
-
-        Matrix4d AX = A * X; // T^{W}_{E} * T^{E}_{C}
-        Matrix4d XB = X * B; // T^{W}_{B} * T^{B}_{C}
-        Matrix4d diff = AX - XB;
-
-        error += diff.squaredNorm(); // Somma dei quadrati degli errori
-    }
-
-    // Calcolo del gradiente omesso per brevità
-    if (!grad.empty()) {
-        std::fill(grad.begin(), grad.end(), 0.0); // Implementazione specifica richiesta
-    }
-
-    std::cout << "Valore attuale della funzione obiettivo: " << error << std::endl;
-    std::cout << "Parametri attuali: ";
-    for (const auto& param : x) {
-        std::cout << param << " ";
-    }
-    std::cout << std::endl;
-
-
-    return error;
-};
-
-double tzHandEyeObjective(const std::vector<double> &x, std::vector<double> &grad, void *my_func_data) {
-    auto* data = reinterpret_cast<OptimizationData*>(my_func_data);
-
-    // Estrai X e Z fissi e aggiorna tz
-    Eigen::Matrix4d X = data->X_fixed;
-    Eigen::Matrix4d Z = data->Z_fixed;
-    X(2, 3) = x[0]; // Aggiorna tz di X con il primo parametro
-    Z(2, 3) = x[1]; // Aggiorna tz di Z con il secondo parametro
-
-    double error = 0.0;
-    for (const auto& pair : data->transformPairs) {
-        Eigen::Matrix4d A = cvMatToEigen(pair.first);
-        Eigen::Matrix4d B = cvMatToEigen(pair.second);
-
-        Eigen::Matrix4d AX = A * X;
-        Eigen::Matrix4d ZB = Z * B;
-        Matrix4d diff = AX - ZB ;
-
-        error += diff.squaredNorm(); // Somma dei quadrati degli errori
-    }
-
-
-    return error;
-}
-
-
 double dotProduct(const cv::Point3d& a, const cv::Point3d& b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
 cv::Mat eigenToCvMat(const Eigen::MatrixXd& eigenMatrix) {
-    // Creazione di una matrice cv::Mat con le stesse dimensioni e tipo di dato (double)
     cv::Mat cvMatrix(eigenMatrix.rows(), eigenMatrix.cols(), CV_64F);
 
-    // Copia dei dati da Eigen a cv::Mat
     for (int i = 0; i < eigenMatrix.rows(); ++i) {
         for (int j = 0; j < eigenMatrix.cols(); ++j) {
             cvMatrix.at<double>(i, j) = eigenMatrix(i, j);
@@ -535,18 +420,15 @@ Eigen::Matrix3d computeSvd(const Eigen::Matrix3d& H) {
 }
 
 void normalization(cv::Mat& input, cv::Mat& output) {
-    // Assicurati che l'output abbia lo stesso tipo e dimensione dell'input
     output = input.clone();
     int rows = input.rows;
     int cols = input.cols;
 
     for (int i = 0; i < cols; i++) {
         cv::Scalar mean;
-        // Calcola media e deviazione standard della colonna i
         mean = cv::mean(input.col(i));
 
         for (int j = 0; j < rows; j++) {
-            // Applica la standardizzazione Z-score
             output.at<double>(j, i) = (input.at<double>(j, i) - mean[0]);
         }
     }
@@ -554,17 +436,14 @@ void normalization(cv::Mat& input, cv::Mat& output) {
 
 
 void drawAxis(cv::Mat& img, cv::Point p, cv::Point q, cv::Scalar colour, const float scale) {
-    double angle = atan2((double)p.y - q.y, (double)p.x - q.x); // angolo in radianti
+    double angle = atan2((double)p.y - q.y, (double)p.x - q.x); 
     double hypotenuse = sqrt((double)((p.y - q.y)*(p.y - q.y) + (p.x - q.x)*(p.x - q.x)));
 
-    // Qui, stiamo allungando l'asse per una visualizzazione migliore
     q.x = (int)(p.x - scale * hypotenuse * cos(angle));
     q.y = (int)(p.y - scale * hypotenuse * sin(angle));
 
-    // Disegna la linea dell'asse
     cv::line(img, p, q, colour, 1, cv::LINE_AA);
 
-    // Crea i punti per disegnare la freccia dell'asse
     p.x = (int)(q.x + 9 * cos(angle + CV_PI / 4));
     p.y = (int)(q.y + 9 * sin(angle + CV_PI / 4));
     cv::line(img, p, q, colour, 1, cv::LINE_AA);
@@ -663,12 +542,6 @@ void data_augmentation(std::vector<cv::Mat> &robot_poses, std::vector<cv::Mat> p
                     A_rotation_noisy /= std::cbrt(det);      // Scale the matrix to make the determinant 1
                 }
             }
-
-            /*cv::Mat B_rotation_noisy = Z_rotation.inv()*A_rotation_noisy*X_rotation;
-            cv::Mat pnp_rotation_noisy = B_rotation_noisy.inv();
-            cv::Mat pnp_rvec_noisy;
-            cv::Rodrigues(pnp_rotation_noisy, pnp_rvec_noisy);
-            pnp_rot[counter] = pnp_rvec_noisy;*/
 
             // Copy the corrected rotation matrix back to the pose
             A_rotation_noisy.copyTo(pose(cv::Rect(0, 0, 3, 3)));
@@ -791,86 +664,6 @@ void data_perturbation_camera(std::vector<cv::Mat> &camera_poses, const double s
     }
 }
 
-
-/*void extractAndMatchSIFT(const std::vector<cv::Mat>& collected_images, std::vector<std::vector<cv::KeyPoint>>& keypoints1_vec, std::vector<std::vector<cv::KeyPoint>>& keypoints2_vec) {
-    if (collected_images.size() < 2) {
-        std::cerr << "Need at least two images to find matches." << std::endl;
-        return;
-    }
-
-    // Initialize SIFT detector
-    cv::Ptr<cv::SIFT> detector = cv::SIFT::create();
-
-
-    for (size_t i = 0; i < collected_images.size() - 1; ++i) {
-        std::vector<cv::KeyPoint> keypoints1, keypoints2;
-        cv::Mat descriptors1, descriptors2;
-
-        detector->detectAndCompute(collected_images[i], cv::Mat(), keypoints1, descriptors1);
-        detector->detectAndCompute(collected_images[i + 1], cv::Mat(), keypoints2, descriptors2);
-
-        // Matching descriptors using FLANN matcher
-        cv::FlannBasedMatcher matcher;
-        std::vector<std::vector<cv::DMatch>> knnMatches;
-        matcher.knnMatch(descriptors1, descriptors2, knnMatches, 2); // Find the 2 nearest matches
-
-        // Lowe's ratio test to filter matches
-        const float ratio_thresh = 0.5f;
-        std::vector<cv::DMatch> good_matches;
-        for (size_t j = 0; j < knnMatches.size(); j++) {
-            if (knnMatches[j][0].distance < ratio_thresh * knnMatches[j][1].distance) {
-                good_matches.push_back(knnMatches[j][0]);
-            }
-        }
-
-        // Optional: Further filter matches with RANSAC
-        std::vector<cv::Point2f> points1, points2;
-        for (auto& match : good_matches) {
-            points1.push_back(keypoints1[match.queryIdx].pt);
-            points2.push_back(keypoints2[match.trainIdx].pt);
-        }
-
-        cv::Mat inlierMask;
-        if (!points1.empty() && !points2.empty()) {
-            cv::findHomography(points1, points2, cv::RANSAC, 5.0, inlierMask); // 5.0 is the RANSAC reprojection threshold
-        }
-
-        // Use inlierMask to select only inlier matches
-        std::vector<cv::DMatch> inlierMatches;
-        for (int k = 0; k < inlierMask.rows; ++k) {
-            if (inlierMask.at<uchar>(k)) {
-                inlierMatches.push_back(good_matches[k]);
-            }
-        }
-
-        std::cout << "Found " << inlierMatches.size() << " robust matches between images " << i << " and " << i + 1 << std::endl;
-
-        // Draw and display the matches
-        cv::Mat img_matches;
-        cv::drawMatches(collected_images[i], keypoints1, collected_images[i + 1], keypoints2, inlierMatches, img_matches, cv::Scalar::all(-1), cv::Scalar::all(-1), std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
-
-        // Filter keypoints based on inlier matches found by RANSAC
-        std::vector<cv::KeyPoint> filtered_keypoints1, filtered_keypoints2;
-        for (int k = 0; k < inlierMask.rows; ++k) {
-            if (inlierMask.at<uchar>(k)) { // If the match is an inlier
-                filtered_keypoints1.push_back(keypoints1[good_matches[k].queryIdx]);
-                filtered_keypoints2.push_back(keypoints2[good_matches[k].trainIdx]);
-            }
-        }
-
-        // Save only the keypoints of inlier matches
-        keypoints1_vec[i] = filtered_keypoints1;
-        keypoints2_vec[i] = filtered_keypoints2;
-
-        cv::imshow("Robust Matches", img_matches);
-        cv::waitKey(0); // Press any key to continue
-        cv::destroyAllWindows();
-    }
-}*/
-
-
-
-
 // Helper function to convert keypoints to Point2f
 void convertKeypointsToPoint2f(const std::vector<cv::KeyPoint>& keypoints, std::vector<cv::Point2f>& points) {
     points.clear();
@@ -925,42 +718,6 @@ void triangulatePoints(
         outputPoints.push_back(cv::Point3d(col.at<float>(0), col.at<float>(1), col.at<float>(2)));
     }
 }
-
-// Function to plot std::vector<cv::Point3d> using PCL
-/*void plotWithPCL(const std::vector<cv::Point3d>& inputPoints, const cv::Mat svd) {
-    // Convert std::vector<cv::Point3d> to pcl::PointCloud<pcl::PointXYZ>::Ptr
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-
-
-    for (const auto& point : inputPoints) {
-        cv::Mat pointMat = (cv::Mat_<double>(3, 1) << point.x, point.y, point.z);
-
-        // Perform the multiplication
-        //cv::Mat transformedPointMat = svd * pointMat;
-        cv::Mat transformedPointMat = svd*pointMat;
-
-        pcl::PointXYZ pclPoint;
-        pclPoint.x = transformedPointMat.at<double>(0, 0);;
-        pclPoint.y = transformedPointMat.at<double>(1, 0);
-        pclPoint.z = transformedPointMat.at<double>(2, 0);
-        cloud->push_back(pclPoint);
-    }
-
-    // Create a PCLVisualizer object
-    pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
-    viewer->setBackgroundColor(0, 0, 0); // Set background to black
-    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> singleColor(cloud, 255, 255, 255); // Green color
-    viewer->addPointCloud<pcl::PointXYZ>(cloud, singleColor, "sample cloud");
-    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, "sample cloud");
-    viewer->addCoordinateSystem(1.0);
-    viewer->initCameraParameters();
-
-    // Main loop to keep the viewer open
-    while (!viewer->wasStopped()) {
-        viewer->spinOnce(100); // Update the viewer
-    }
-}*/
-
 
 cv::Mat readPointsFromTriangulation(const std::vector<cv::Point3d> triangulated_points) {
 
@@ -1057,45 +814,6 @@ void findDeepMatches(const std::string& matchesFolderPath, std::vector<cv::Mat>&
         return a.filename().string() < b.filename().string();
     });
 
-    // Process each file in sorted order
-    /*for (const auto& entryPath : sortedEntries) {
-        int index1, index2;
-        std::cout << "Entry path: " << entryPath.filename().string().c_str() << std::endl;
-        std::sscanf(entryPath.filename().string().c_str(), "%d_%d.txt", &index1, &index2);
-        std::ifstream file(entryPath);
-        std::vector<cv::Point2f> points1, points2;
-        std::string line;
-
-        while (std::getline(file, line)) {
-            std::replace(line.begin(), line.end(), ',', ' ');
-            std::istringstream iss(line);
-            float x1, y1, x2, y2;
-            if (iss >> x1 >> y1 >> x2 >> y2) {
-                points1.emplace_back(x1, y1);
-                points2.emplace_back(x2, y2);
-            }
-        }
-
-        file.close();
-
-        std::cout << "Found " << points1.size() << " matches in file " << entryPath.filename() << std::endl;
-
-        if (index1 < images_collected.size() && index2 < images_collected.size()) {
-
-            std::vector<cv::KeyPoint> keypoints1, keypoints2;
-
-            for (size_t i = 0; i < points1.size(); ++i) {
-                keypoints1.emplace_back(points1[i], 1.f);
-                keypoints2.emplace_back(points2[i], 1.f);
-            }
-            std::cout << "Index 1: " << index1 << std::endl;
-            std::cout << "Index 2: " << index2 << std::endl;
-            keypoints1_vec[index1] = keypoints1;
-            keypoints2_vec[index2] = keypoints2;
-        } else {
-            std::cerr << "Image indices out of bounds: " << index1 << ", " << index2 << std::endl;
-        }
-    }*/
     int counter1 = 0;
     int counter2 = 1;
     if (end_index > sortedEntries.size()){
@@ -1138,50 +856,6 @@ void findDeepMatches(const std::string& matchesFolderPath, std::vector<cv::Mat>&
         } else {
             std::cerr << "Image indices out of bounds: " << index1 << ", " << index2 << std::endl;
         }
-    }
-}
-
-
-void metric_AX_XB(const std::vector<cv::Mat>& X, const std::vector<std::vector<cv::Mat>>& Ai, const std::vector<std::vector<cv::Mat>>& Bi, const std::vector<std::vector<int>>& cross_observation_matrix){
-    double trans_error = 0.0;
-    double rot_error = 0.0;
-    for (int i = 0; i < X.size(); i++){
-        double camera_trans_error = 0.0;
-        double camera_rot_error = 0.0;
-        int counter_camera = 0;
-        for (int j = 0; j < Ai[i].size()-1; j++){
-            if (cross_observation_matrix[j][i] && cross_observation_matrix[j+1][i]){
-                std::vector<double> metric = errorMetric(Ai[i][j].inv()*Ai[i][j+1]*X[i], X[i]*Bi[i][j]*Bi[i][j+1].inv());
-                std::cout << "Translation error: " << metric[0] << " m" <<std::endl;
-                std::cout << "Rotation error: " << metric[1] << " deg" <<std::endl;
-                camera_trans_error += metric[0];
-                camera_rot_error += metric[1];
-                counter_camera++;
-            }
-        }
-
-        std::cout << "Camera " << std::to_string(i) << " trans error: " << camera_trans_error/counter_camera << std::endl;
-        std::cout << "Camera " << std::to_string(i) << " rot error: " << camera_rot_error/counter_camera << std::endl;
-        trans_error += camera_trans_error/counter_camera;
-        rot_error += camera_rot_error/counter_camera;
-    }
-    std::cout << "Final trans error: " << trans_error/X.size() << std::endl;
-    std::cout << "Final rot error: " << rot_error/X.size() << std::endl;
-}
-
-
-
-std::string getStringAfterLastSlash(const std::string& input) {
-    // Trova la posizione dell'ultima occorrenza del carattere '/'
-    size_t pos = input.find_last_of('/');
-
-    // Se '/' è stato trovato nella stringa
-    if (pos != std::string::npos) {
-        // Estrai e restituisce la sottostringa che segue l'ultima '/'
-        return input.substr(pos + 1);
-    } else {
-        // Se '/' non è presente, restituisce una stringa vuota o un messaggio
-        return "Nessun carattere '/' trovato nella stringa.";
     }
 }
 
@@ -1511,52 +1185,6 @@ std::vector<int> selectPoses(const std::vector<std::vector<int>>& cross_observat
 }
 
 
-/*void plot3DTrajectories(const std::vector<cv::Mat>& robot2d, const std::vector<cv::Mat>& cam2d) {
-    pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Trajectories With Labels"));
-    viewer->setBackgroundColor(0, 0, 0); // Set background to black
-    viewer->initCameraParameters();
-
-    viewer->addCoordinateSystem(0.1);
-
-    auto convertToPointCloud = [](const std::vector<cv::Mat>& mats) {
-        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-        for (const auto& mat : mats) {
-            if (mat.rows == 1 && mat.cols == 3 && mat.type() == CV_64F) {
-                pcl::PointXYZ point(static_cast<float>(mat.at<double>(0)),
-                                    static_cast<float>(mat.at<double>(1)),
-                                    static_cast<float>(mat.at<double>(2)));
-                cloud->push_back(point);
-            }
-        }
-        return cloud;
-    };
-
-    auto addPointsWithLabels = [&](const pcl::PointCloud<pcl::PointXYZ>::Ptr& cloud, const std::string& id_prefix, const pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ>& handler, const cv::Scalar& color) {
-        viewer->addPointCloud<pcl::PointXYZ>(cloud, handler, id_prefix + " cloud");
-        viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, id_prefix + " cloud");
-
-        for (size_t i = 0; i < cloud->points.size(); ++i) {
-            const auto& point = cloud->points[i];
-            std::string label = std::to_string(i);
-            viewer->addText3D(label, point, 0.02, color[2] / 255.0, color[1] / 255.0, color[0] / 255.0, id_prefix + " label_" + std::to_string(i));
-        }
-    };
-
-    auto robotCloud = convertToPointCloud(robot2d);
-    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> robotHandler(robotCloud, 255, 0, 0); // Red
-    addPointsWithLabels(robotCloud, "robot", robotHandler, cv::Scalar(0, 0, 255));
-
-    auto camCloud = convertToPointCloud(cam2d);
-    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> camHandler(camCloud, 0, 255, 0); // Green
-    addPointsWithLabels(camCloud, "camera", camHandler, cv::Scalar(0, 255, 0));
-
-    while (!viewer->wasStopped()) {
-        viewer->spinOnce(100);
-    }
-}*/
-
-
-
 // Checks if there is a non-zero element in any of the vectors
 bool hasNonZero(const std::vector<std::vector<double>>& vectors, const std::vector<std::vector<int>>& cross_observation_matrix) {
     for (int i = 0; i < vectors.size(); i++) {
@@ -1613,9 +1241,7 @@ std::vector<double> computeTransAverageError_AXXB(std::vector<std::vector<cv::Ma
         }
         tras_cam = tras_cam/counter_cam;
         tras_cam_vec[i] = tras_cam;
-        //average_error += tras_cam;
     }
-    //average_error = average_error/number_of_cameras;
 
     return tras_cam_vec;
 }

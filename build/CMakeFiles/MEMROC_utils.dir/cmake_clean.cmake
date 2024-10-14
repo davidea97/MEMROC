@@ -9,8 +9,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/MEMROC_utils.dir/src/Detector.cpp.o.d"
   "CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o"
   "CMakeFiles/MEMROC_utils.dir/src/MobileHandEyeCalibrator.cpp.o.d"
-  "CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.o"
-  "CMakeFiles/MEMROC_utils.dir/src/PinholeCameraModel.cpp.o.d"
   "CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.o"
   "CMakeFiles/MEMROC_utils.dir/src/Reader.cpp.o.d"
   "CMakeFiles/MEMROC_utils.dir/src/display_utils.cpp.o"

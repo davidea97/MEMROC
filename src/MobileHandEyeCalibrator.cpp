@@ -20,7 +20,6 @@ MobileHandEyeCalibrator::MobileHandEyeCalibrator(const int number_of_waypoints, 
 
     // Array initialization
     h2e_ = new double*[number_of_cameras_];
-    std::cout << "DEBUG 0.3" << std::endl;
     for (int i = 0; i < number_of_cameras_; i++) {
         h2e_[i] = new double[6];
     }
@@ -35,7 +34,6 @@ MobileHandEyeCalibrator::MobileHandEyeCalibrator(const int number_of_waypoints, 
             h2e_[i][j+3] = t_vec_h2e(j);
         }
     }
-    std::cout << "DEBUG 0.6" << std::endl;
     // Relative poses
     for (int i = 0; i < number_of_cameras_; i++) {
         for (int wp = 0; wp < number_of_waypoints_ - 1; wp++) {
@@ -53,7 +51,6 @@ MobileHandEyeCalibrator::MobileHandEyeCalibrator(const int number_of_waypoints, 
         }
     }
 
-    std::cout << "DEBUG 0.9" << std::endl;
     for (int i = 0; i < number_of_cameras_; i++){
         for (int wp = 0; wp < number_of_waypoints_-1; wp++){
 

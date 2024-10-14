@@ -2,8 +2,8 @@
 // Created by davide on 11/12/23.
 //
 
-#ifndef METRIC_CALIBRATOR_MOBILEHANDEYECALIBRATOR_H
-#define METRIC_CALIBRATOR_MOBILEHANDEYECALIBRATOR_H
+#ifndef MEMROC_CALIBRATOR_MOBILEHANDEYECALIBRATOR_H
+#define MEMROC_CALIBRATOR_MOBILEHANDEYECALIBRATOR_H
 
 #include <iostream>
 #include <Eigen/Core>
@@ -13,7 +13,6 @@
 #include "utils.h"
 #include "display_utils.h"
 #include "handeye_calibrator.h"
-#include "PinholeCameraModel.h"
 
 class MobileHandEyeCalibrator{
 private:
@@ -42,4 +41,4 @@ public:
 
 };
 
-#endif //METRIC_CALIBRATOR_MOBILEHANDEYECALIBRATOR_H
+#endif //MEMROC_CALIBRATOR_MOBILEHANDEYECALIBRATOR_H
