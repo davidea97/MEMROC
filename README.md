@@ -106,7 +106,18 @@ cd build
 ```
 
 ## Citation
-
+If you find this code useful in your work, please acknowledge it by citing the following reference:
+```
+@misc{allegro2024memrocmultieyemobilerobot,
+      title={MEMROC: Multi-Eye to Mobile RObot Calibration}, 
+      author={Davide Allegro and Matteo Terreran and Stefano Ghidoni},
+      year={2024},
+      eprint={2410.08805},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2410.08805}, 
+}
+```
 ## License
 The MEMROC dataset is released under the CC BY-NC-SA 4.0 license. Authors reserve the right to change the license in the future. Authors of the MEMROC dataset are not responsible for any misuse of the dataset or any potential harm caused by the use of the dataset.
 
