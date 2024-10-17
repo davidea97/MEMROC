@@ -108,14 +108,11 @@ cd build
 ## Citation
 If you find this code useful in your work, please acknowledge it by citing the following reference:
 ```
-@misc{allegro2024memrocmultieyemobilerobot,
-      title={MEMROC: Multi-Eye to Mobile RObot Calibration}, 
-      author={Davide Allegro and Matteo Terreran and Stefano Ghidoni},
-      year={2024},
-      eprint={2410.08805},
-      archivePrefix={arXiv},
-      primaryClass={cs.RO},
-      url={https://arxiv.org/abs/2410.08805}, 
+@article{allegro2024memroc,
+  title={MEMROC: Multi-Eye to Mobile RObot Calibration},
+  author={Allegro, Davide and Terreran, Matteo and Ghidoni, Stefano},
+  journal={arXiv preprint arXiv:2410.08805},
+  year={2024}
 }
 ```
 ## License
