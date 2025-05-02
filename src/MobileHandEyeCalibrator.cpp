@@ -81,7 +81,7 @@ void MobileHandEyeCalibrator::mobileCalibration(std::vector<cv::Mat> &optimal_h2
     options.max_num_refinement_iterations = 3;
     options.use_mixed_precision_solves = true;
     options.minimizer_progress_to_stdout = true;
-    options.num_threads = 20;
+    options.num_threads = 16;
     options.max_num_iterations = 2000;
     options.gradient_tolerance = 1e-5;  // 1e-5
     options.function_tolerance = std::numeric_limits<double>::epsilon();
@@ -155,7 +155,7 @@ void MobileHandEyeCalibrator::mobileJointCalibration(std::vector<cv::Mat> &optim
     options.max_num_refinement_iterations = 3;
     options.use_mixed_precision_solves = true;
     options.minimizer_progress_to_stdout = true;
-    options.num_threads = 20;
+    options.num_threads = 16;
     options.max_num_iterations = 2000;
     options.gradient_tolerance = 1e-5;  // 1e-5
     options.function_tolerance = std::numeric_limits<double>::epsilon();
