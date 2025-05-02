@@ -33,7 +33,18 @@ void Calibrator::calibration() {
     
     Detector detector(calib_info, camera_network_info, number_of_waypoints);
     std::vector<std::vector<cv::Mat>> correct_poses(number_of_cameras);
-    detectCalibrationPattern(detector, calib_info, images_collected, poses_collected, rvec_all, tvec_all, rvec_used, tvec_used, rototras_vec, rototras_all, correct_poses, cross_observation_matrix);
+    detectCalibrationPattern(detector,
+                            calib_info,
+                            images_collected,
+                            poses_collected,
+                            rvec_all,
+                            tvec_all,
+                            rvec_used,
+                            tvec_used,
+                            rototras_vec,
+                            rototras_all,
+                            correct_poses,
+                            cross_observation_matrix);
 
     // Compute camera and robot poses
     std::vector<std::vector<cv::Mat>> relative_robot_poses, relative_cam_poses;
@@ -66,7 +77,11 @@ void Calibrator::setupCalibration(CalibrationInfo& calib_info, Reader& reader, s
     }
 }
 
-void Calibrator::readAndProcessData(Reader& reader, CalibrationInfo& calib_info, std::vector<std::vector<cv::Mat>>& images_collected, std::vector<std::vector<cv::Mat>>& poses_collected, int& number_of_waypoints) {
+void Calibrator::readAndProcessData(Reader& reader,
+                                    CalibrationInfo& calib_info,
+                                    std::vector<std::vector<cv::Mat>>& images_collected,
+                                    std::vector<std::vector<cv::Mat>>& poses_collected,
+                                    int& number_of_waypoints) {
     const int number_of_cameras = calib_info.getNumberOfCams();
     int total_images = countImagesInFolder(data_ + "/" + calib_info.getCamFolderPref() + "1/image");
 
@@ -79,7 +94,18 @@ void Calibrator::readAndProcessData(Reader& reader, CalibrationInfo& calib_info,
     poses_collected = reader.readRobotPoses(number_of_cameras, original_poses, start_index, end_index);
 }
 
-void Calibrator::detectCalibrationPattern(Detector detector, CalibrationInfo calib_info, std::vector<std::vector<cv::Mat>>& images_collected, std::vector<std::vector<cv::Mat>>& poses_collected, std::vector<std::vector<cv::Mat>>& rvec_all, std::vector<std::vector<cv::Mat>>& tvec_all, std::vector<std::vector<cv::Mat>>& rvec_used, std::vector<std::vector<cv::Mat>>& tvec_used, std::vector<std::vector<cv::Mat>>& rototras_vec, std::vector<std::vector<cv::Mat>>& rototras_all, std::vector<std::vector<cv::Mat>>& correct_poses, std::vector<std::vector<int>>& cross_observation_matrix) {
+void Calibrator::detectCalibrationPattern(Detector detector,
+                                        CalibrationInfo calib_info,
+                                        std::vector<std::vector<cv::Mat>>& images_collected,
+                                        std::vector<std::vector<cv::Mat>>& poses_collected,
+                                        std::vector<std::vector<cv::Mat>>& rvec_all,
+                                        std::vector<std::vector<cv::Mat>>& tvec_all,
+                                        std::vector<std::vector<cv::Mat>>& rvec_used,
+                                        std::vector<std::vector<cv::Mat>>& tvec_used,
+                                        std::vector<std::vector<cv::Mat>>& rototras_vec,
+                                        std::vector<std::vector<cv::Mat>>& rototras_all,
+                                        std::vector<std::vector<cv::Mat>>& correct_poses,
+                                        std::vector<std::vector<int>>& cross_observation_matrix) {
     const int number_of_cameras = calib_info.getNumberOfCams();
     int number_of_waypoints = images_collected[0].size();
 
@@ -116,7 +142,14 @@ void Calibrator::detectCalibrationPattern(Detector detector, CalibrationInfo cal
     }
 }
 
-void Calibrator::computePoses(std::vector<std::vector<cv::Mat>>& relative_robot_poses, std::vector<std::vector<cv::Mat>>& relative_cam_poses, std::vector<std::vector<cv::Mat>>& rvec_all, std::vector<std::vector<cv::Mat>>& tvec_all, std::vector<std::vector<cv::Mat>> poses_collected, std::vector<std::vector<cv::Mat>> rototras_vec, std::vector<std::vector<cv::Mat>> rototras_all, std::vector<std::vector<int>> cross_observation_matrix) {
+void Calibrator::computePoses(std::vector<std::vector<cv::Mat>>& relative_robot_poses,
+                            std::vector<std::vector<cv::Mat>>& relative_cam_poses,
+                            std::vector<std::vector<cv::Mat>>& rvec_all,
+                            std::vector<std::vector<cv::Mat>>& tvec_all,
+                            std::vector<std::vector<cv::Mat>> poses_collected,
+                            std::vector<std::vector<cv::Mat>> rototras_vec,
+                            std::vector<std::vector<cv::Mat>> rototras_all,
+                            std::vector<std::vector<int>> cross_observation_matrix) {
     const int number_of_cameras = rvec_all[0].size();
     int number_of_waypoints = poses_collected[0].size();
     // Compute relative robot and camera poses
@@ -132,7 +165,15 @@ void Calibrator::computePoses(std::vector<std::vector<cv::Mat>>& relative_robot_
     }
 }
 
-void Calibrator::svdElaboration(const std::vector<std::vector<cv::Mat>>& poses_collected, const std::vector<std::vector<cv::Mat>>& rvec_all, const std::vector<std::vector<cv::Mat>>& relative_robot_poses, const std::vector<std::vector<cv::Mat>>& relative_cam_poses, std::vector<std::vector<cv::Mat>> rototras_vec, std::vector<std::vector<cv::Mat>> rototras_all, std::vector<std::vector<int>> cross_observation_matrix, std::vector<cv::Mat>& svd_mat_vec, std::vector<cv::Mat>& svd_mat_inv_vec) {
+void Calibrator::svdElaboration(const std::vector<std::vector<cv::Mat>>& poses_collected,
+                                const std::vector<std::vector<cv::Mat>>& rvec_all,
+                                const std::vector<std::vector<cv::Mat>>& relative_robot_poses,
+                                const std::vector<std::vector<cv::Mat>>& relative_cam_poses,
+                                std::vector<std::vector<cv::Mat>> rototras_vec,
+                                std::vector<std::vector<cv::Mat>> rototras_all,
+                                std::vector<std::vector<int>> cross_observation_matrix,
+                                std::vector<cv::Mat>& svd_mat_vec,
+                                std::vector<cv::Mat>& svd_mat_inv_vec) {
     const int number_of_cameras = rvec_all[0].size();
     int number_of_waypoints = poses_collected[0].size();
 
@@ -164,7 +205,13 @@ void Calibrator::svdElaboration(const std::vector<std::vector<cv::Mat>>& poses_c
     }
 }
 
-void Calibrator::processPointClouds(const std::vector<std::vector<cv::Mat>>& poses_collected, std::vector<std::vector<int>> cross_observation_matrix, std::vector<cv::Mat> svd_mat_vec, std::vector<cv::Mat> svd_mat_inv_vec, std::vector<std::vector<cv::Mat>> rototras_vec, std::vector<std::vector<double>>& d_camera_whole, std::vector<std::vector<double>>& ang_camera_whole) {
+void Calibrator::processPointClouds(const std::vector<std::vector<cv::Mat>>& poses_collected,
+                                    std::vector<std::vector<int>> cross_observation_matrix,
+                                    std::vector<cv::Mat> svd_mat_vec,
+                                    std::vector<cv::Mat> svd_mat_inv_vec,
+                                    std::vector<std::vector<cv::Mat>> rototras_vec,
+                                    std::vector<std::vector<double>>& d_camera_whole,
+                                    std::vector<std::vector<double>>& ang_camera_whole) {
     const int number_of_cameras = poses_collected.size();
     const int number_of_waypoints = poses_collected[0].size();
 
@@ -222,7 +269,8 @@ void Calibrator::preparePlaneDetection(int cam, std::vector<cv::Mat>& pointcloud
 void Calibrator::groundPlaneDetection(int cam, std::vector<cv::Mat>& pointcloud_vec, std::vector<double>& d_camera_vec, std::vector<double>& ang_camera_vec, std::vector<std::vector<int>> cross_observation_matrix, std::vector<cv::Mat>& svd_mat_vec, std::vector <cv::Mat>& svd_mat_inv_vec, std::vector<std::vector<cv::Mat>> rototras_vec) {
     
     // Process the pointcloud data and compute RANSAC models
-    double ground_plane_confidence = 0.9999;
+    // double ground_plane_confidence = 0.9999;
+    double ground_plane_confidence = 0.98;
     for (int i = 0; i < pointcloud_vec.size(); i++) {
         if (cross_observation_matrix[i][cam] && !pointcloud_vec[i].empty()) {
             cv::Mat null_tras = (cv::Mat_<double>(3, 1) << 0, 0, 0);
@@ -253,12 +301,63 @@ void Calibrator::groundPlaneDetection(int cam, std::vector<cv::Mat>& pointcloud_
             seg.setInputCloud(cloud);
             seg.segment(*inliers, *coefficients);
 
+            // pcl::PointIndices::Ptr inliers_wall(new pcl::PointIndices);
+            // pcl::ModelCoefficients::Ptr coefficients_wall(new pcl::ModelCoefficients);
+
+            // // seg.segment(*inliers, *coefficients);
+            // seg.segment(*inliers_wall, *coefficients_wall);
+
+            // pcl::ExtractIndices<pcl::PointXYZ> extract_wall;
+            // extract_wall.setInputCloud(cloud);
+            // extract_wall.setIndices(inliers_wall);
+            // extract_wall.setNegative(true); // Extract everything except wall
+            // pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_no_wall(new pcl::PointCloud<pcl::PointXYZ>());
+            // extract_wall.filter(*cloud_no_wall);
+
+            // std::cout << "Number of points in cloud_no_wall: " << cloud_no_wall->points.size() << std::endl;
+
+            // seg.setInputCloud(cloud_no_wall);
+            // seg.setModelType(pcl::SACMODEL_PLANE);
+            // seg.setDistanceThreshold(1 - 0.98);
+            // // seg.setOptimizeCoefficients(true);
+            // seg.setMethodType(pcl::SAC_RANSAC);
+            // seg.segment(*inliers, *coefficients);
+
             if (inliers->indices.empty()) {
                 PCL_ERROR("Could not estimate a planar model for the given dataset.\n");
             }
 
+            std::ofstream outfile("inliers_" + std::to_string(i) + ".txt");
+            if (outfile.is_open()) {
+                for (const auto& idx : inliers->indices) {
+                    outfile << idx << "\n";
+                }
+                outfile.close();
+                std::cout << "Inliers saved to inliers.txt" << std::endl;
+            } else {
+                std::cerr << "Unable to open file for writing." << std::endl;
+            }
+
+            // save the point cloud
+            std::ofstream outfile2("pointcloud_" + std::to_string(i) + ".txt");
+            if (outfile2.is_open()) {
+                for (const auto& point : cloud->points) {
+                    outfile2 << point.x << " " << point.y << " " << point.z << "\n";
+                }
+                outfile2.close();
+                std::cout << "Point cloud saved to pointcloud.txt" << std::endl;
+            } else {
+                std::cerr << "Unable to open file for writing." << std::endl;
+            }
+
             // Process pointcloud features
             computeCameraHeight(coefficients, d_camera_vec[i], ang_camera_vec[i]);
+
+            std::cout << "Camera " << std::to_string(cam + 1) << " - Pointcloud "
+                    << std::to_string(i) << ": d_camera = " << d_camera_vec[i]
+                    << ", ang_camera = " << ang_camera_vec[i] << std::endl;
+            // Number of inliers
+            std::cout << "Number of inliers: " << inliers->indices.size() << std::endl;
         }
     }
 }

@@ -11,6 +11,7 @@
 #include <chrono>
 #include <vector>
 #include <filesystem>
+#include <fstream>  // For std::ofstream
 
 #include "Reader.h"
 #include "Detector.h"
