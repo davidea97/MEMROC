@@ -6,6 +6,7 @@
 #define MEMROC_DETECTOR_H
 
 #include <opencv2/opencv.hpp>
+#include <opencv2/aruco/charuco.hpp>
 #include <iostream>
 
 #include "CalibrationInfo.h"
