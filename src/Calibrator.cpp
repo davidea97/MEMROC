@@ -301,27 +301,27 @@ void Calibrator::groundPlaneDetection(int cam, std::vector<cv::Mat>& pointcloud_
             seg.setInputCloud(cloud);
             seg.segment(*inliers, *coefficients);
 
-            // pcl::PointIndices::Ptr inliers_wall(new pcl::PointIndices);
-            // pcl::ModelCoefficients::Ptr coefficients_wall(new pcl::ModelCoefficients);
+            pcl::PointIndices::Ptr inliers_wall(new pcl::PointIndices);
+            pcl::ModelCoefficients::Ptr coefficients_wall(new pcl::ModelCoefficients);
 
-            // // seg.segment(*inliers, *coefficients);
-            // seg.segment(*inliers_wall, *coefficients_wall);
-
-            // pcl::ExtractIndices<pcl::PointXYZ> extract_wall;
-            // extract_wall.setInputCloud(cloud);
-            // extract_wall.setIndices(inliers_wall);
-            // extract_wall.setNegative(true); // Extract everything except wall
-            // pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_no_wall(new pcl::PointCloud<pcl::PointXYZ>());
-            // extract_wall.filter(*cloud_no_wall);
-
-            // std::cout << "Number of points in cloud_no_wall: " << cloud_no_wall->points.size() << std::endl;
-
-            // seg.setInputCloud(cloud_no_wall);
-            // seg.setModelType(pcl::SACMODEL_PLANE);
-            // seg.setDistanceThreshold(1 - 0.98);
-            // // seg.setOptimizeCoefficients(true);
-            // seg.setMethodType(pcl::SAC_RANSAC);
             // seg.segment(*inliers, *coefficients);
+            seg.segment(*inliers_wall, *coefficients_wall);
+
+            pcl::ExtractIndices<pcl::PointXYZ> extract_wall;
+            extract_wall.setInputCloud(cloud);
+            extract_wall.setIndices(inliers_wall);
+            extract_wall.setNegative(true); // Extract everything except wall
+            // pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_no_wall(new pcl::PointCloud<pcl::PointXYZ>());
+            extract_wall.filter(*cloud);
+
+            std::cout << "Number of points in cloud: " << cloud->points.size() << std::endl;
+
+            seg.setInputCloud(cloud);
+            seg.setModelType(pcl::SACMODEL_PLANE);
+            seg.setDistanceThreshold(1 - 0.98);
+            // seg.setOptimizeCoefficients(true);
+            seg.setMethodType(pcl::SAC_RANSAC);
+            seg.segment(*inliers, *coefficients);
 
             if (inliers->indices.empty()) {
                 PCL_ERROR("Could not estimate a planar model for the given dataset.\n");
