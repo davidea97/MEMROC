@@ -196,6 +196,7 @@ void Calibrator::svdElaboration(const std::vector<std::vector<cv::Mat>>& poses_c
                             svd_mat_vec[i].at<double>(2, 0), svd_mat_vec[i].at<double>(2, 1), svd_mat_vec[i].at<double>(2, 2), 0, 0, 0, 0, 1);
 
         for (int j = 0; j < number_of_waypoints; j++) {
+            std::cout << "Svd iter calculation: " << i << " " << j << std::endl;
             if (cross_observation_matrix[j][i]) {
                 svd_mat_inv_vec[i] = poses_collected[i][j].inv() * svd_temp * rototras_vec[i][j].inv();
                 std::cout << "Esimated svd inv: " << svd_mat_inv_vec[i] << std::endl;
@@ -230,12 +231,17 @@ void Calibrator::processPointClouds(const std::vector<std::vector<cv::Mat>>& pos
         // Process pointcloud data and extract features
         groundPlaneDetection(cam, pointcloud_vec, d_camera_vec, ang_camera_vec, cross_observation_matrix, svd_mat_vec, svd_mat_inv_vec, rototras_vec);
         
-        double threshold = 0.995;
+        // double threshold = 0.995;
+        double threshold = 0.990;
         for (int i = 0; i < number_of_waypoints; i++) {
             if (ang_camera_vec[i] < threshold) {
                 d_camera_vec[i] = 0;
             }
+            std::cout << "Camera " << std::to_string(cam + 1) << " - Pointcloud "
+                        << std::to_string(i) << ": d_camera = " << d_camera_vec[i]
+                        << ", ang_camera = " << ang_camera_vec[i] << std::endl;
         }
+
         d_camera_whole[cam] = d_camera_vec;
         ang_camera_whole[cam] = ang_camera_vec;
     }
@@ -295,32 +301,12 @@ void Calibrator::groundPlaneDetection(int cam, std::vector<cv::Mat>& pointcloud_
             pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
             pcl::SACSegmentation<pcl::PointXYZ> seg;
             seg.setOptimizeCoefficients(true);
-            seg.setModelType(pcl::SACMODEL_PLANE);
+            seg.setModelType(pcl::SACMODEL_PERPENDICULAR_PLANE);
             seg.setMethodType(pcl::SAC_RANSAC);
             seg.setDistanceThreshold(1 - ground_plane_confidence);
+            seg.setAxis(Eigen::Vector3f(0, 0, 1));
+            seg.setEpsAngle(10.0f * (M_PI / 180.0f));
             seg.setInputCloud(cloud);
-            seg.segment(*inliers, *coefficients);
-
-            pcl::PointIndices::Ptr inliers_wall(new pcl::PointIndices);
-            pcl::ModelCoefficients::Ptr coefficients_wall(new pcl::ModelCoefficients);
-
-            // seg.segment(*inliers, *coefficients);
-            seg.segment(*inliers_wall, *coefficients_wall);
-
-            pcl::ExtractIndices<pcl::PointXYZ> extract_wall;
-            extract_wall.setInputCloud(cloud);
-            extract_wall.setIndices(inliers_wall);
-            extract_wall.setNegative(true); // Extract everything except wall
-            // pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_no_wall(new pcl::PointCloud<pcl::PointXYZ>());
-            extract_wall.filter(*cloud);
-
-            std::cout << "Number of points in cloud: " << cloud->points.size() << std::endl;
-
-            seg.setInputCloud(cloud);
-            seg.setModelType(pcl::SACMODEL_PLANE);
-            seg.setDistanceThreshold(1 - 0.98);
-            // seg.setOptimizeCoefficients(true);
-            seg.setMethodType(pcl::SAC_RANSAC);
             seg.segment(*inliers, *coefficients);
 
             if (inliers->indices.empty()) {
@@ -351,13 +337,19 @@ void Calibrator::groundPlaneDetection(int cam, std::vector<cv::Mat>& pointcloud_
             }
 
             // Process pointcloud features
+            if (coefficients->values.empty()) {
+                std::cerr << "No coefficients found." << std::endl;
+                ang_camera_vec[i] = 0;
+                d_camera_vec[i] = 0;
+                continue;
+            }
             computeCameraHeight(coefficients, d_camera_vec[i], ang_camera_vec[i]);
 
             std::cout << "Camera " << std::to_string(cam + 1) << " - Pointcloud "
                     << std::to_string(i) << ": d_camera = " << d_camera_vec[i]
                     << ", ang_camera = " << ang_camera_vec[i] << std::endl;
-            // Number of inliers
-            std::cout << "Number of inliers: " << inliers->indices.size() << std::endl;
+            // // Number of inliers
+            // std::cout << "Number of inliers: " << inliers->indices.size() << std::endl;
         }
     }
 }
