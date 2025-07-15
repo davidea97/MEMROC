@@ -23,7 +23,7 @@ make -j8
 ## Dataset download
 This work introduces a comprehensive dataset comprising both synthetic and real images.
 ![MEMROC Overview](images/dataset.png)
-_Dataset soon avaialble_: You can download the dataset directly from the following [link](URL) or use your own data.
+You can download the dataset directly from the following [link](https://drive.google.com/drive/folders/18eEL0y1D3VcjqGblAEm7GtBPmAusws9_?usp=drive_link) or use your own data.
 
 
 It is essential that the structure of your data is as follows:
